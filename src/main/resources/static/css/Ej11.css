@@ -1,0 +1,18 @@
+.bordeTabla{
+    text-align: center;
+    border-collapse: collapse;
+    column-width: 100%;
+    min-height: 100%;
+}
+
+.fondoGris{
+    background-image: url(https://www.ecured.cu/images/thumb/7/75/Rob_Lucci_Profile.jpg/1200px-Rob_Lucci_Profile.jpg);
+}
+
+.fondoDivisas{
+    background-color: lightblue;
+}
+
+.fondoNumeros{
+    background-color: #FFFFCC;
+}

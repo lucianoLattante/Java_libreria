@@ -1,0 +1,41 @@
+.colorTitulo{
+    color: rgb(98, 146, 136);
+}
+
+.colorPalabra1{
+    color: red;
+}
+
+.colorHead1{
+    color: blue;
+
+}
+
+.especial1{
+    color:blueviolet;
+}
+
+.colorLink:link{
+    color: red;
+}
+
+.colorLink2{
+    color: blue;
+}
+
+.titulosColumna1{
+    color:darkgoldenrod;
+
+}
+
+.colorVerde{
+    color:green;
+}
+
+.elcolordemierdaese{
+    color:darkolivegreen;
+}
+
+.colorRosa{
+    color: deeppink;
+}

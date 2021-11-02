@@ -1,0 +1,12 @@
+.colores1:link{
+    color: red;
+}
+
+.colorCursor:hover{
+    color: white;
+    background-color: red;
+}
+
+.colorVisita:visited{
+    color:gray;
+}

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+        <title>Cargar un nuevo libro</title>
+    </head>
+    <body style="background-image: url(/imgs/1920x1200_sanji-fiery-background-one-piece.jpg); background-size: cover">
+
+        <section>
+            <div>
+                <h1 style="text-align: center;">Complete el formulario:</h1>
+
+                <form th:action="@{/save}" method="POST" th:object="${libro}">
+                    <input hidden th:field="*{id}">
+                    
+                    <br>
+                    
+                    <label style="text-align: center;"><b>ISBN</b></label>
+                    <br>
+                    <input type="text" class="form-control" th:field="*{isbn}">
+
+                    <br>
+
+                    <label>Titulo</label>
+                    <br>
+                    <input type="text" class="form-control" th:field="*{titulo}">
+
+                    <br>
+
+                    <label>Año</label>
+                    <br>
+                    <input type="text" class="form-control" th:field="*{anio}">
+
+                    <br>
+
+                    <label>Ejemplares</label>
+                    <br>
+                    <input type="text" class="form-control" th:field="*{ejemplares}">
+
+                    <br>
+
+                    <label>Ejemplares prestados</label>
+                    <br>
+                    <input type="text" class="form-control" th:field="*{ejemplaresPrestados}">
+
+                    <br>
+
+                    <label>Ejemplares restantes</label>
+                    <br>
+                    <input type="text" class="form-control" th:field="*{ejemplaresRestantes}">
+
+                    <br>
+                    
+                    <select class="form-control" type="text" th:field="${libro.autor.nombre}" aria-label="Default select example">
+                        <option selected="selected" disabled="disabled" th:value="*{autor.nombre}"></option>
+                        <option th:each="autor : ${autores}" th:text="${autor.nombre}" th:value="${autor.nombre}"></option>
+                        
+                    </select>
+                    
+                    <br>
+                    
+                    <select class="form-control" type="text" th:field="${libro.editorial.nombre}" aria-label="Default select example">
+                        <option selected="selected" disabled="disabled" th:value="*{editorial.nombre}"></option>
+                        <option th:each="editorial : ${editoriales}" th:text="${editorial.nombre}" th:value="${editorial.nombre}"></option>
+                    </select>
+                    
+                    <br>
+
+                    <button type="submit" class="btn btn-warning">Cargar libro nuevo</button>
+
+                </form>
+
+            </div>
+
+        </section>
+
+    </body>
+</html>

@@ -1,0 +1,19 @@
+html{
+    background-color: blueviolet;
+}
+
+.alineaFuente{
+    text-align: center;
+    font:oblique;
+}
+
+.alineaParrafos{
+    text-align: left;
+    font:700;
+    color: darkblue;
+}
+
+.a:hover{
+    color: white;
+    background-color:#CC0000;
+ }

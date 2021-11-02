@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es-AR" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+        <link rel="stylesheet" href="../static/css/Fondo.css">
+        <title>Libreria</title>
+    </head>
+    <body style="background-image: url(imgs/Shanks_arrives.jpg);background-size: cover">
+        <h1>Autores:</h1>
+
+        <a class="btn btn-warning" href="/nuevoAutor" role="button">Cargar nuevo autor</a>
+
+        <a class="btn btn-warning" href="/" role="button">Volver a la pagina de libros</a>
+
+        <br>
+        </br>
+
+        <table class="table table-dark table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Nombre</th>
+                    <th scope="col" sec:authorize="hasRole('ROLE_ADMIN')">Editar</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col" sec:authorize="hasRole('ROLE_ADMIN')">Eliminar autor</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="autor : ${autores}">
+                    <td th:text="${autor.nombre}"></td>
+                    <td >
+                        <a class="btn btn-warning" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/lista-autores/editar-autor}+'?id='+${autor.id}">Editar</a>
+                    </td>
+
+            <div th:switch="${autor.alta}"> 
+                <td th:case="true" th:text="Disponible"></td>
+            </div>
+
+            <td>
+                <a class="btn btn-warning" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/lista-autores/disponibilidad-autor}+'?id='+${autor.id}">Eliminar</a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+
+</body>
+</html>
