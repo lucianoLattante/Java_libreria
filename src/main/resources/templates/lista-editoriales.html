@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es-AR" xmlns:th="http://www.thymeleaf.org">
+<html lang="es-AR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
     <head>
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -12,7 +12,7 @@
         
         <h1>Editoriales:</h1>
 
-        <a class="btn btn-warning" href="/nuevaEditorial" role="button">Cargar nueva editorial</a>
+        <a class="btn btn-warning" href="/nuevaEditorial" role="button" sec:authorize="hasRole('ADMIN')">Cargar nueva editorial</a>
 
         <a class="btn btn-warning" href="/" role="button">Volver a la pagina de libros</a>
 
@@ -32,7 +32,7 @@
                 <tr th:each="editorial : ${editoriales}">
                     <td th:text="${editorial.nombre}"></td>
                     <td >
-                        <a class="btn btn-warning" th:href="@{/lista-editoriales/editar-editorial}+'?id='+${editorial.id}">Editar</a>
+                        <a class="btn btn-warning" sec:authorize="hasRole('ADMIN')" th:href="@{/lista-editoriales/editar-editorial}+'?id='+${editorial.id}">Editar</a>
                     </td>
 
             <div th:switch="${editorial.alta}"> 
@@ -40,7 +40,10 @@
             </div>
 
             <td>
-                <a class="btn btn-warning" th:href="@{/lista-editoriales/disponibilidad-editorial}+'?id='+${editorial.id}">Eliminar</a>
+                <form sec:authorize="hasRole('ADMIN')" th:action="@{/lista-editoriales/disponibilidad-editorial}" method="post">
+                    <input type="hidden" name="id" th:value="${editorial.id}">
+                    <button class="btn btn-warning" type="submit">Eliminar</button>
+                </form>
             </td>
         </tr>
     </tbody>

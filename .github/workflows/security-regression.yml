@@ -1,0 +1,30 @@
+name: Catalog security regression
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+
+jobs:
+  http-security:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      # The MVC slice uses mocks. Even accidental DB configuration stays local and unusable.
+      SPRING_DATASOURCE_URL: jdbc:mysql://127.0.0.1:1/security_test?connectTimeout=100&socketTimeout=100
+      SPRING_DATASOURCE_USERNAME: unused
+      SPRING_DATASOURCE_PASSWORD: unused
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
+        with:
+          distribution: temurin
+          java-version: '11'
+          cache: maven
+      - name: Verify HTTP authorization, CSRF and rendered forms
+        run: mvn -B --no-transfer-progress -Dtest=CatalogSecurityWebTest test

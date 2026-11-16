@@ -26,7 +26,7 @@ public class AutorController {
     @Autowired
     private AutorRepositorio autorRepositorio;
     
-    @GetMapping("/disponibilidad-autor")
+    @PostMapping("/disponibilidad-autor")
     public String autorDisponibilidad(@RequestParam (required = true) String id) throws ErrorLibro{
         autorService.EliminarAutor(id);
         

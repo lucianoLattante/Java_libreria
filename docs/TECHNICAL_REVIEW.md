@@ -1,6 +1,8 @@
 # Technical review — Java Library
 
-Source baseline: `673bad6a2789e462ef258bca3fe261cde53064fd` (2026-11-16 review). This is a source review of a historical learning application, not a security certification.
+Historical source baseline: `673bad6a2789e462ef258bca3fe261cde53064fd`.
+Security-change starting point: `7f2e56987050b2e721efba394c99ef796da975c0`.
+This is a review and bounded maintenance case study, not a security certification.
 
 ## Implemented architecture
 
@@ -13,35 +15,32 @@ flowchart TD
   MVC --> Views["Thymeleaf views"]
 ```
 
-Controllers prepare views and delegate operations to services. Entities are persisted through JPA. Some controllers also access repositories directly, so the layering is a convention rather than an enforced boundary.
+Some controllers still access repositories directly; the layering is not an enforced module boundary.
 
-## Evidence and proposed work
+## Security maintenance implemented
+
+The original review identified disabled CSRF, incomplete endpoint authorization and destructive GET handlers. The current [security configuration](../src/main/java/com/egg/libreria2/Security.java) explicitly permits read-only catalog routes, reserves catalog management for ADMIN, denies unlisted requests and retains default CSRF protection. All three deletion handlers now use POST and their templates render CSRF-bearing forms. Login, registration and logout forms are covered by the HTTP tests.
+
+See the [security case study](SECURITY_HARDENING.md) for the policy, 71-test local result and remaining limits. These corrections do not close unrelated service, persistence, dependency or deployment concerns.
+
+## Open observations
 
 | Observation | Evidence | Proposed change — not implemented here |
 | --- | --- | --- |
-| CSRF explicitly disabled | [Security.java](../src/main/java/com/egg/libreria2/Security.java) | Enable CSRF, adapt forms, test missing/valid tokens |
-| Incomplete endpoint policy | Same configuration | Define public and protected routes and verify roles |
-| GET deletes a book | [PortalController](../src/main/java/com/egg/libreria2/controller/PortalController.java), `libroDisponibilidad` | Authorized POST/DELETE with CSRF, plus HTTP tests |
-| Quantity fields checked for null but no full stock invariant | [LibroService](../src/main/java/com/egg/libreria2/services/LibroService.java), `AgregarLibro`/`Save` | Reject negative values and inconsistent totals in the service |
-| Missing records accessed with `Optional.get()` before the presence check | Same service, `eliminarLibro` | Resolve once with an explicit not-found outcome |
+| Quantity fields lack a full stock invariant | [LibroService](../src/main/java/com/egg/libreria2/services/LibroService.java), `AgregarLibro`/`Save` | Reject negative values and inconsistent totals in the service |
+| Missing records use `Optional.get()` before the presence check | Same service, `eliminarLibro` | Resolve once with an explicit not-found outcome |
 | Schema auto-update | [application.yml](../src/main/resources/application.yml) | Baseline and version migrations against a disposable DB |
+| HTTP-only authorization boundary | [Security.java](../src/main/java/com/egg/libreria2/Security.java) | Review service entry points before introducing non-HTTP callers |
+| Historical dependency/configuration state | [pom.xml](../pom.xml) and repository history | Separate upgrade, advisory and secret/artifact audit |
 
-Prioritize browser authorization/CSRF and destructive routes first, then domain validation and persistence reproducibility. Keep each behavior change in a separate reviewable PR with tests. These observations remain open after this documentation-only change.
+Real MySQL persistence, domain-invariant, rollback and concurrency tests remain proposed. No Docker Compose, Flyway migration, OpenAPI specification or production deployment was added by this maintenance.
 
-## Testing strategy — proposed
+## Interview discussion
 
-Use service tests for stock invariants and missing records; MVC security tests for login, roles, CSRF and forbidden operations; MySQL Testcontainers tests for real persistence and rollback. The current context-loading test does not establish those properties.
+Present this as an earlier learning application followed by a measured security improvement. Establish personal contributions from commits and retain team attribution.
 
-No migration, Docker Compose, OpenAPI specification, CI pipeline or Testcontainers implementation is introduced by this PR.
-
-## Presenting this project
-
-“I built or contributed to this earlier Java/Spring learning application” should be adjusted to the contribution history that can actually be shown. Explain the MVC/service/repository flow, then discuss the security and validation limitations transparently. Use the repository as a learning-history example rather than proof of recent production architecture.
-
-Interview discussion:
-
-1. Why is a GET handler that deletes data unsafe even when a login form exists?
-2. What does BCrypt solve, and which authorization and session concerns remain?
-3. Where should the relation between total, borrowed and remaining copies be enforced?
-4. Why is a context-loading test insufficient to verify role and ownership rules?
-5. What risks does Hibernate schema auto-update introduce when moving from a local exercise to a shared environment?
+1. Why does login alone not protect a destructive operation?
+2. Why do authorization and CSRF need separate negative tests?
+3. How does an HTTP filter boundary differ from service-level authorization?
+4. What do rendered-form round trips prove that an injected test CSRF token does not?
+5. Why do 71 passing MVC tests leave database invariants and dependency risk open?

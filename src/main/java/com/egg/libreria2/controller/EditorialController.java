@@ -55,7 +55,7 @@ public class EditorialController {
         return "redirect:/lista-editoriales";
     }
     
-    @GetMapping("/disponibilidad-editorial")
+    @PostMapping("/disponibilidad-editorial")
     public String editorialDisponibilidad(@RequestParam (required = true) String id) throws ErrorLibro{
         editorialService.eliminarEditorial(id);
         

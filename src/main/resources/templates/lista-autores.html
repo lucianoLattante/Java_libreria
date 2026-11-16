@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es-AR" xmlns:th="http://www.thymeleaf.org">
+<html lang="es-AR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
     <head>
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -11,7 +11,7 @@
     <body style="background-image: url(imgs/Shanks_arrives.jpg);background-size: cover">
         <h1>Autores:</h1>
 
-        <a class="btn btn-warning" href="/nuevoAutor" role="button">Cargar nuevo autor</a>
+        <a class="btn btn-warning" href="/nuevoAutor" role="button" sec:authorize="hasRole('ADMIN')">Cargar nuevo autor</a>
 
         <a class="btn btn-warning" href="/" role="button">Volver a la pagina de libros</a>
 
@@ -22,16 +22,16 @@
             <thead>
                 <tr>
                     <th scope="col">Nombre</th>
-                    <th scope="col" sec:authorize="hasRole('ROLE_ADMIN')">Editar</th>
+                    <th scope="col" sec:authorize="hasRole('ADMIN')">Editar</th>
                     <th scope="col">Estado</th>
-                    <th scope="col" sec:authorize="hasRole('ROLE_ADMIN')">Eliminar autor</th>
+                    <th scope="col" sec:authorize="hasRole('ADMIN')">Eliminar autor</th>
                 </tr>
             </thead>
             <tbody>
                 <tr th:each="autor : ${autores}">
                     <td th:text="${autor.nombre}"></td>
                     <td >
-                        <a class="btn btn-warning" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/lista-autores/editar-autor}+'?id='+${autor.id}">Editar</a>
+                        <a class="btn btn-warning" sec:authorize="hasRole('ADMIN')" th:href="@{/lista-autores/editar-autor}+'?id='+${autor.id}">Editar</a>
                     </td>
 
             <div th:switch="${autor.alta}"> 
@@ -39,7 +39,10 @@
             </div>
 
             <td>
-                <a class="btn btn-warning" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/lista-autores/disponibilidad-autor}+'?id='+${autor.id}">Eliminar</a>
+                <form sec:authorize="hasRole('ADMIN')" th:action="@{/lista-autores/disponibilidad-autor}" method="post">
+                    <input type="hidden" name="id" th:value="${autor.id}">
+                    <button class="btn btn-warning" type="submit">Eliminar</button>
+                </form>
             </td>
         </tr>
     </tbody>

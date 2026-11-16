@@ -92,7 +92,7 @@ public class PortalController{
         return "redirect:/listaDeAutores";
     }
     
-    @GetMapping("/disponibilidad-libro")
+    @PostMapping("/disponibilidad-libro")
     public String libroDisponibilidad(@RequestParam (required = true) String id) throws ErrorLibro{
         libroService.eliminarLibro(id);
         
