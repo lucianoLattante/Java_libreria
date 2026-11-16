@@ -32,7 +32,7 @@
                             <a class="navbar-brand" th:href="@{/registro}">Registrarse</a>
                         </div>
                         <div class="container-fluid" sec:authorize="isAuthenticated()">
-                            <a class="navbar-brand" th:href="@{/logout}">Terminar sesion</a>
+                            <form th:action="@{/logout}" method="post"><button type="submit" class="navbar-brand btn btn-link">Terminar sesion</button></form>
                         </div>
                     </ul>
                 </div>
@@ -41,11 +41,11 @@
 
         <h1>Libros:</h1>
 
-        <a type="button" class="btn btn-dark" href="/nuevoLibro">Cargar libro nuevo</a>
+        <a sec:authorize="hasRole('ADMIN')" type="button" class="btn btn-dark" href="/nuevoLibro">Cargar libro nuevo</a>
 
-        <a type="button" class="btn btn-dark" href="/nuevoAutor">Cargar autor nuevo</a>
+        <a sec:authorize="hasRole('ADMIN')" type="button" class="btn btn-dark" href="/nuevoAutor">Cargar autor nuevo</a>
         
-        <a type="button" class="btn btn-dark" href="/nuevaEditorial">Cargar nueva editorial</a>
+        <a sec:authorize="hasRole('ADMIN')" type="button" class="btn btn-dark" href="/nuevaEditorial">Cargar nueva editorial</a>
 
         <br>
         </br>
@@ -62,11 +62,10 @@
                     <th scope="col">Dispoibilidad</th>
                     <th scope="col">Autor</th>
                     <th scope="col">Editorial</th>
-                    <th scope="col">Editar</th>
-                    <th scope="col">Eliminar</th>
+                    <th scope="col" sec:authorize="hasRole('ADMIN')">Editar</th>
+                    <th scope="col" sec:authorize="hasRole('ADMIN')">Eliminar</th>
                 </tr>
             </thead>
-            <tbody>
             <tbody>
                 <tr th:each="libro : ${libros}">
                     <td th:text="${libro.isbn}"></td>
@@ -78,8 +77,14 @@
                     <td th:if="${libro.alta == true}" th:text="Disponible"></td>
                     <td th:text="${libro.autor != null ? libro.autor.nombre : 'Desconocido'}"></td>
                     <td th:text="${libro.editorial != null ? libro.editorial.nombre : 'Desconocido'}"></td>
-                    <td> <a class="btn btn-warning" th:href="@{/editar-libro}+'?id='+${libro.id}">Editar</a></td>
-                    <td> <a class="btn btn-warning" th:href="@{/disponibilidad-libro}+'?id='+${libro.id}">Eliminar</a></td>
+                    <td sec:authorize="hasRole('ADMIN')"> <a class="btn btn-warning" th:href="@{/editar-libro}+'?id='+${libro.id}">Editar</a></td>
+                    <td sec:authorize="hasRole('ADMIN')">
+                        <form th:action="@{/disponibilidad-libro}" method="post">
+                            <input type="hidden" name="id" th:value="${libro.id}">
+                            <button class="btn btn-warning" type="submit">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
             </tbody>
         </table>
 
